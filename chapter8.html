@@ -170,13 +170,7 @@
 import Control.Plus (empty)
 import Data.Array ((..))
 
-countThrows :: Int -&gt; Array (Array Int)
-countThrows n = do
-  x &lt;- 1 .. 6
-  y &lt;- 1 .. 6
-  if x + y == n
-    then pure [ x, y ]
-    else empty
+
 </code></pre>
 <p>We can see that this function works in PSCi:</p>
 <pre><code class="language-text">&gt; import Test.Examples
@@ -306,9 +300,7 @@ foldl :: forall   a b.            (a -&gt; b -&gt;   a) -&gt; a -&gt; List b -&g
 </code></pre>
 <p>Note that this implementation is almost identical to that of <code>foldl</code> on lists, with the exception of do notation.</p>
 <p>We can define and test this function in PSCi. Here is an example - suppose we defined a &quot;safe division&quot; function on integers, which tested for division by zero and used the <code>Maybe</code> type constructor to indicate failure:</p>
-<pre><code class="language-hs">safeDivide :: Int -&gt; Int -&gt; Maybe Int
-safeDivide _ 0 = Nothing
-safeDivide a b = Just (a / b)
+<pre><code class="language-hs">
 </code></pre>
 <p>Then we can use <code>foldM</code> to express iterated safe division:</p>
 <pre><code class="language-text">&gt; import Test.Examples
@@ -681,25 +673,7 @@ $ npx parcel src/index.html --open
 </code></pre>
 <p>It calls our generated JavaScript equivalent of the <code>main</code> function of <code>module Main</code> (<code>src/main.purs</code>). Recall that <code>spago build</code> puts all generated JavaScript in the <code>output</code> directory.</p>
 <p>The <code>main</code> function uses the DOM and HTML APIs to render our address book component within the <code>container</code> element we defined in <code>index.html</code>:</p>
-<pre><code class="language-hs">main :: Effect Unit
-main = do
-  log &quot;Rendering address book component&quot;
-  -- Get window object
-  w &lt;- window
-  -- Get window's HTML document
-  doc &lt;- document w
-  -- Get &quot;container&quot; element in HTML
-  ctr &lt;- getElementById &quot;container&quot; $ toNonElementParentNode doc
-  case ctr of
-    Nothing -&gt; throw &quot;Container element not found.&quot;
-    Just c -&gt; do
-      -- Create AddressBook react component
-      addressBookApp &lt;- mkAddressBookApp
-      let
-        -- Create JSX node from react component. Pass-in empty props
-        app = element addressBookApp {}
-      -- Render AddressBook JSX node in DOM &quot;container&quot; element
-      D.render app c
+<pre><code class="language-hs">
 </code></pre>
 <p>Note that these three lines:</p>
 <pre><code class="language-hs">w &lt;- window
@@ -811,18 +785,7 @@ setPerson :: (state -&gt; state) -&gt; Effect Unit
 <li><code>div'</code>: Same as <code>div</code>, but returns the <code>ReactComponent</code> before conversion to <code>JSX</code>.</li>
 </ul>
 <p>To display validation errors (if any) at the top of our form, we create a <code>renderValidationErrors</code> helper function that turns the <code>Errors</code> structure into an array of JSX. This array is prepended to the rest of our form.</p>
-<pre><code class="language-hs">renderValidationErrors :: Errors -&gt; Array R.JSX
-renderValidationErrors [] = []
-renderValidationErrors xs =
-  let
-    renderError :: String -&gt; R.JSX
-    renderError err = D.li_ [ D.text err ]
-  in
-    [ D.div
-        { className: &quot;alert alert-danger row&quot;
-        , children: [ D.ul_ (map renderError xs) ]
-        }
-    ]
+<pre><code class="language-hs">
 </code></pre>
 <p>Note that since we are simply manipulating regular data structures here, we can use functions like <code>map</code> to build up more interesting elements:</p>
 <pre><code class="language-hs">children: [ D.ul_ (map renderError xs)]
@@ -831,34 +794,7 @@ renderValidationErrors xs =
 <pre><code class="language-hs">className: &quot;alert alert-danger row&quot;
 </code></pre>
 <p>A second helper function is <code>formField</code>, which creates a text input for a single form field:</p>
-<pre><code class="language-hs">formField :: String -&gt; String -&gt; String -&gt; (String -&gt; Effect Unit) -&gt; R.JSX
-formField name placeholder value setValue =
-  D.label
-    { className: &quot;form-group row&quot;
-    , children:
-        [ D.div
-            { className: &quot;col-sm col-form-label&quot;
-            , children: [ D.text name ]
-            }
-        , D.div
-            { className: &quot;col-sm&quot;
-            , children:
-                [ D.input
-                    { className: &quot;form-control&quot;
-                    , placeholder
-                    , value
-                    , onChange:
-                        let
-                          handleValue :: Maybe String -&gt; Effect Unit
-                          handleValue (Just v) = setValue v
-                          handleValue Nothing  = pure unit
-                        in
-                          handler targetValue handleValue
-                    }
-                ]
-            }
-        ]
-    }
+<pre><code class="language-hs">
 </code></pre>
 <p>Putting the <code>input</code> and display <code>text</code> in a <code>label</code> aids in accessibility for screen readers.</p>
 <p>The <code>onChange</code> attribute allows us to describe how to respond to user input. We use the <code>handler</code> function, which has the following type:</p>

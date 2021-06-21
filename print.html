@@ -1308,25 +1308,16 @@ Nothing
 </ul>
 <p>The <code>Data.Picture</code> module defines a data type <code>Shape</code> for simple shapes, and a type <code>Picture</code> for collections of shapes, along with functions for working with those types.</p>
 <p>The module imports the <code>Data.Foldable</code> module, which provides functions for folding data structures:</p>
-<pre><code class="language-haskell">module Data.Picture where
-
-import Prelude
-import Data.Foldable (foldl)
-import Data.Number (infinity)
+<pre><code class="language-haskell">
 </code></pre>
 <p>The <code>Data.Picture</code> module also imports the <code>Math</code> module, but this time using the <code>as</code> keyword:</p>
-<pre><code class="language-haskell">import Math as Math
+<pre><code class="language-haskell">
 </code></pre>
 <p>This makes the types and functions in that module available for use, but only by using the <em>qualified name</em>, like <code>Math.max</code>. This can be useful to avoid overlapping imports, or just to make it clearer which modules certain things are imported from.</p>
 <p><em>Note</em>: it is not necessary to use the same module name as the original module for a qualified import. Shorter qualified names like <code>import Math as M</code> are possible, and quite common.</p>
 <h2 id="simple-pattern-matching"><a class="header" href="#simple-pattern-matching">Simple Pattern Matching</a></h2>
 <p>Let's begin by looking at an example. Here is a function which computes the greatest common divisor of two integers using pattern matching:</p>
-<pre><code class="language-haskell">gcd :: Int -&gt; Int -&gt; Int
-gcd n 0 = n
-gcd 0 m = m
-gcd n m = if n &gt; m
-            then gcd (n - m) m
-            else gcd n (m - n)
+<pre><code class="language-haskell">
 </code></pre>
 <p>This algorithm is called the Euclidean Algorithm. If you search for its definition online, you will likely find a set of mathematical equations which look a lot like the code above. This is one benefit of pattern matching: it allows you to define code by cases, writing simple, declarative code which looks like a specification of a mathematical function.</p>
 <p>A function written using pattern matching works by pairing sets of conditions with their results. Each line is called an <em>alternative</em> or a <em>case</em>. The expressions on the left of the equals sign are called <em>patterns</em>, and each case consists of one or more patterns, separated by spaces. Cases describe which conditions the arguments must satisfy before the expression on the right of the equals sign should be evaluated and returned. Each case is tried in order, and the first case whose patterns match their inputs determines the return value.</p>
@@ -1349,23 +1340,15 @@ gcd n m = if n &gt; m
 <li>Wildcard patterns, indicated with an underscore (<code>_</code>), which match any argument, and which do not bind any names.</li>
 </ul>
 <p>Here are two more examples which demonstrate using these simple patterns:</p>
-<pre><code class="language-haskell">fromString :: String -&gt; Boolean
-fromString &quot;true&quot; = true
-fromString _      = false
+<pre><code class="language-haskell">
 
-toString :: Boolean -&gt; String
-toString true  = &quot;true&quot;
-toString false = &quot;false&quot;
+
 </code></pre>
 <p>Try these functions in PSCi.</p>
 <h2 id="guards-1"><a class="header" href="#guards-1">Guards</a></h2>
 <p>In the Euclidean algorithm example, we used an <code>if .. then .. else</code> expression to switch between the two alternatives when <code>m &gt; n</code> and <code>m &lt;= n</code>. Another option in this case would be to use a <em>guard</em>.</p>
 <p>A guard is a boolean-valued expression which must be satisfied in addition to the constraints imposed by the patterns. Here is the Euclidean algorithm rewritten to use a guard:</p>
-<pre><code class="language-haskell">gcdV2 :: Int -&gt; Int -&gt; Int
-gcdV2 n 0 = n
-gcdV2 0 n = n
-gcdV2 n m | n &gt; m     = gcdV2 (n - m) m
-          | otherwise = gcdV2 n (m - n)
+<pre><code class="language-haskell">
 </code></pre>
 <p>In this case, the third line uses a guard to impose the extra condition that the first argument is strictly larger than the second.</p>
 <p>As this example demonstrates, guards appear on the left of the equals symbol, separated from the list of patterns by a pipe character (<code>|</code>).</p>
@@ -1377,14 +1360,10 @@ gcdV2 n m | n &gt; m     = gcdV2 (n - m) m
 </ol>
 <h2 id="array-patterns"><a class="header" href="#array-patterns">Array Patterns</a></h2>
 <p><em>Array literal patterns</em> provide a way to match arrays of a fixed length. For example, suppose we want to write a function <code>isEmpty</code> which identifies empty arrays. We could do this by using an empty array pattern (<code>[]</code>) in the first alternative:</p>
-<pre><code class="language-haskell">isEmpty :: forall a. Array a -&gt; Boolean
-isEmpty [] = true
-isEmpty _ = false
+<pre><code class="language-haskell">
 </code></pre>
 <p>Here is another function which matches arrays of length five, binding each of its five elements in a different way:</p>
-<pre><code class="language-haskell">takeFive :: Array Int -&gt; Int
-takeFive [0, 1, a, b, _] = a * b
-takeFive _ = 0
+<pre><code class="language-haskell">
 </code></pre>
 <p>The first pattern only matches arrays with five elements, whose first and second elements are 0 and 1 respectively. In that case, the function returns the product of the third and fourth elements. In every other case, the function returns zero. For example, in PSCi:</p>
 <pre><code class="language-text">&gt; :paste
@@ -1406,8 +1385,7 @@ takeFive _ = 0
 <p><em>Record patterns</em> are used to match - you guessed it - records.</p>
 <p>Record patterns look just like record literals, but instead of values on the right of the colon, we specify a binder for each field.</p>
 <p>For example: this pattern matches any record which contains fields called <code>first</code> and <code>last</code>, and binds their values to the names <code>x</code> and <code>y</code> respectively:</p>
-<pre><code class="language-haskell">showPerson :: { first :: String, last :: String } -&gt; String
-showPerson { first: x, last: y } = y &lt;&gt; &quot;, &quot; &lt;&gt; x
+<pre><code class="language-haskell">
 </code></pre>
 <p>Record patterns provide a good example of an interesting feature of the PureScript type system: <em>row polymorphism</em>. Suppose we had defined <code>showPerson</code> without a type signature above. What would its inferred type have been? Interestingly, it is not the same as the type we gave:</p>
 <pre><code class="language-text">&gt; showPerson { first: x, last: y } = y &lt;&gt; &quot;, &quot; &lt;&gt; x
@@ -1435,37 +1413,22 @@ Type of expression lacks required label &quot;last&quot;
 <p>and PSCi would have inferred the same type.</p>
 <h2 id="record-puns"><a class="header" href="#record-puns">Record Puns</a></h2>
 <p>Recall that the <code>showPerson</code> function matches a record inside its argument, binding the <code>first</code> and <code>last</code> fields to values named <code>x</code> and <code>y</code>. We could alternatively just reuse the field names themselves, and simplify this sort of pattern match as follows:</p>
-<pre><code class="language-haskell">showPersonV2 :: { first :: String, last :: String } -&gt; String
-showPersonV2 { first, last } = last &lt;&gt; &quot;, &quot; &lt;&gt; first
+<pre><code class="language-haskell">
 </code></pre>
 <p>Here, we only specify the names of the fields, and we do not need to specify the names of the values we want to introduce. This is called a <em>record pun</em>.</p>
 <p>It is also possible to use record puns to <em>construct</em> records. For example, if we have values named <code>first</code> and <code>last</code> in scope, we can construct a person record using <code>{ first, last }</code>:</p>
-<pre><code class="language-haskell">unknownPerson :: { first :: String, last :: String }
-unknownPerson = { first, last }
-  where
-    first = &quot;Jane&quot;
-    last  = &quot;Doe&quot;
+<pre><code class="language-haskell">
 </code></pre>
 <p>This may improve readability of code in some circumstances.</p>
 <h2 id="nested-patterns"><a class="header" href="#nested-patterns">Nested Patterns</a></h2>
 <p>Array patterns and record patterns both combine smaller patterns to build larger patterns. For the most part, the examples above have only used simple patterns inside array patterns and record patterns, but it is important to note that patterns can be arbitrarily <em>nested</em>, which allows functions to be defined using conditions on potentially complex data types.</p>
 <p>For example, this code combines two record patterns:</p>
-<pre><code class="language-haskell">type Address = { street :: String, city :: String }
-
-type Person = { name :: String, address :: Address }
-
-livesInLA :: Person -&gt; Boolean
-livesInLA { address: { city: &quot;Los Angeles&quot; } } = true
-livesInLA _ = false
+<pre><code class="language-haskell">
 </code></pre>
 <h2 id="named-patterns"><a class="header" href="#named-patterns">Named Patterns</a></h2>
 <p>Patterns can be <em>named</em> to bring additional names into scope when using nested patterns. Any pattern can be named by using the <code>@</code> symbol.</p>
 <p>For example, this function sorts two-element arrays, naming the two elements, but also naming the array itself:</p>
-<pre><code class="language-haskell">sortPair :: Array Int -&gt; Array Int
-sortPair arr@[x, y]
-  | x &lt;= y = arr
-  | otherwise = [y, x]
-sortPair arr = arr
+<pre><code class="language-haskell">
 </code></pre>
 <p>This way, we save ourselves from allocating a new array if the pair is already sorted. Note that if the input array does not contain <em>exactly</em> two elements, then this function simply returns it unchanged, even if it's unsorted.</p>
 <h2 id="exercises-8"><a class="header" href="#exercises-8">Exercises</a></h2>
@@ -1477,15 +1440,9 @@ sortPair arr = arr
 <h2 id="case-expressions"><a class="header" href="#case-expressions">Case Expressions</a></h2>
 <p>Patterns do not only appear in top-level function declarations. It is possible to use patterns to match on an intermediate value in a computation, using a <code>case</code> expression. Case expressions provide a similar type of utility to anonymous functions: it is not always desirable to give a name to a function, and a <code>case</code> expression allows us to avoid naming a function just because we want to use a pattern.</p>
 <p>Here is an example. This function computes &quot;longest zero suffix&quot; of an array (the longest suffix which sums to zero):</p>
-<pre><code class="language-haskell">import Data.Array (tail)
-import Data.Foldable (sum)
-import Data.Maybe (fromMaybe)
+<pre><code class="language-haskell">
 
-lzs :: Array Int -&gt; Array Int
-lzs [] = []
-lzs xs = case sum xs of
-           0 -&gt; xs
-           _ -&gt; lzs (fromMaybe [] $ tail xs)
+
 </code></pre>
 <p>For example:</p>
 <pre><code class="language-text">&gt; lzs [1, 2, 3, 4]
@@ -1498,10 +1455,9 @@ lzs xs = case sum xs of
 <h2 id="pattern-match-failures-and-partial-functions"><a class="header" href="#pattern-match-failures-and-partial-functions">Pattern Match Failures and Partial Functions</a></h2>
 <p>If patterns in a case expression are tried in order, then what happens in the case when none of the patterns in a case alternatives match their inputs? In this case, the case expression will fail at runtime with a <em>pattern match failure</em>.</p>
 <p>We can see this behavior with a simple example:</p>
-<pre><code class="language-haskell">import Partial.Unsafe (unsafePartial)
+<pre><code class="language-haskell">
 
-partialFunction :: Boolean -&gt; Boolean
-partialFunction = unsafePartial \true -&gt; true
+
 </code></pre>
 <p>This function contains only a single case, which only matches a single input, <code>true</code>. If we compile this file, and test in PSCi with any other argument, we will see an error at runtime:</p>
 <pre><code class="language-text">&gt; partialFunction false
@@ -1545,16 +1501,9 @@ redundantCase false = false
 <p>However, this approach has one major drawback: to work with <code>Shape</code>s abstractly, it is necessary to identify all of the operations one might wish to perform, and to define them on the <code>Shape</code> interface. It becomes difficult to add new operations without breaking modularity.</p>
 <p>Algebraic data types provide a type-safe way to solve this sort of problem, if the set of shapes is known in advance. It is possible to define new operations on <code>Shape</code> in a modular way, and still maintain type-safety.</p>
 <p>Here is how <code>Shape</code> might be represented as an algebraic data type:</p>
-<pre><code class="language-haskell">data Shape
-  = Circle Point Number
-  | Rectangle Point Number Number
-  | Line Point Point
-  | Text Point String
+<pre><code class="language-haskell">
 
-type Point =
-  { x :: Number
-  , y :: Number
-  }
+
 </code></pre>
 <p>This declaration defines <code>Shape</code> as a sum of different constructors, and for each constructor identifies the data that is included. A <code>Shape</code> is either a <code>Circle</code> which contains a center <code>Point</code> and a radius (a number), or a <code>Rectangle</code>, or a <code>Line</code>, or <code>Text</code>. There are no other ways to construct a value of type <code>Shape</code>.</p>
 <p>An algebraic data type is introduced using the <code>data</code> keyword, followed by the name of the new type and any type arguments. The type's constructors (i.e. its <em>data constructors</em>) are defined after the equals symbol, and are separated by pipe characters (<code>|</code>). The data carried by an ADT's constructors doesn't have to be restricted to primitive types: constructors can include records, arrays, or even other ADTs.</p>
@@ -1569,31 +1518,14 @@ type Point =
 <h2 id="using-adts"><a class="header" href="#using-adts">Using ADTs</a></h2>
 <p>It is simple enough to use the constructors of an algebraic data type to construct a value: simply apply them like functions, providing arguments corresponding to the data included with the appropriate constructor.</p>
 <p>For example, the <code>Line</code> constructor defined above required two <code>Point</code>s, so to construct a <code>Shape</code> using the <code>Line</code> constructor, we have to provide two arguments of type <code>Point</code>:</p>
-<pre><code class="language-haskell">exampleLine :: Shape
-exampleLine = Line p1 p2
-  where
-    p1 :: Point
-    p1 = { x: 0.0, y: 0.0 }
-
-    p2 :: Point
-    p2 = { x: 100.0, y: 50.0 }
+<pre><code class="language-haskell">
 </code></pre>
 <p>To construct the points <code>p1</code> and <code>p2</code>, we apply the <code>Point</code> constructor to its single argument, which is a record.</p>
 <p>So, constructing values of algebraic data types is simple, but how do we use them? This is where the important connection with pattern matching appears: the only way to consume a value of an algebraic data type is to use a pattern to match its constructor.</p>
 <p>Let's see an example. Suppose we want to convert a <code>Shape</code> into a <code>String</code>. We have to use pattern matching to discover which constructor was used to construct the <code>Shape</code>. We can do this as follows:</p>
-<pre><code class="language-haskell">showShape :: Shape -&gt; String
-showShape (Circle c r) =
-  &quot;Circle [center: &quot; &lt;&gt; showPoint c &lt;&gt; &quot;, radius: &quot; &lt;&gt; show r &lt;&gt; &quot;]&quot;
-showShape (Rectangle c w h) =
-  &quot;Rectangle [center: &quot; &lt;&gt; showPoint c &lt;&gt; &quot;, width: &quot; &lt;&gt; show w &lt;&gt; &quot;, height: &quot; &lt;&gt; show h &lt;&gt; &quot;]&quot;
-showShape (Line start end) =
-  &quot;Line [start: &quot; &lt;&gt; showPoint start &lt;&gt; &quot;, end: &quot; &lt;&gt; showPoint end &lt;&gt; &quot;]&quot;
-showShape (Text loc text) =
-  &quot;Text [location: &quot; &lt;&gt; showPoint loc &lt;&gt; &quot;, text: &quot; &lt;&gt; show text &lt;&gt; &quot;]&quot;
+<pre><code class="language-haskell">
 
-showPoint :: Point -&gt; String
-showPoint { x, y } =
-  &quot;(&quot; &lt;&gt; show x &lt;&gt; &quot;, &quot; &lt;&gt; show y &lt;&gt; &quot;)&quot;
+
 </code></pre>
 <p>Each constructor can be used as a pattern, and the arguments to the constructor can themselves be bound using patterns of their own. Consider the first case of <code>showShape</code>: if the <code>Shape</code> matches the <code>Circle</code> constructor, then we bring the arguments of <code>Circle</code> (center and radius) into scope using two variable patterns, <code>c</code> and <code>r</code>. The other cases are similar.</p>
 <h2 id="exercises-9"><a class="header" href="#exercises-9">Exercises</a></h2>
@@ -1606,22 +1538,10 @@ showPoint { x, y } =
 <p>There is a special case of algebraic data types, called <em>newtypes</em>. Newtypes are introduced using the <code>newtype</code> keyword instead of the <code>data</code> keyword.</p>
 <p>Newtypes must define <em>exactly one</em> constructor, and that constructor must take <em>exactly one</em> argument. That is, a newtype gives a new name to an existing type. In fact, the values of a newtype have the same runtime representation as the underlying type, so there is no runtime performance overhead. They are, however, distinct from the point of view of the type system. This gives an extra layer of type safety.</p>
 <p>As an example, we might want to define newtypes as type-level aliases for <code>Number</code>, to ascribe units like volts, amps, and ohms:</p>
-<pre><code class="language-haskell">newtype Volt = Volt Number
-newtype Ohm = Ohm Number
-newtype Amp = Amp Number
+<pre><code class="language-haskell">
 </code></pre>
 <p>Then we define functions and values using these types:</p>
-<pre><code class="language-haskell">calculateCurrent :: Volt -&gt; Ohm -&gt; Amp
-calculateCurrent (Volt v) (Ohm r) = Amp (v / r)
-
-battery :: Volt
-battery = Volt 1.5
-
-lightbulb :: Ohm
-lightbulb = Ohm 500.0
-
-current :: Amp
-current = calculateCurrent battery lightbulb
+<pre><code class="language-haskell">
 </code></pre>
 <p>This prevents us from making silly mistakes, such as attempting to calculate the current produced by <em>two</em> lightbulbs <em>without</em> a voltage source.</p>
 <pre><code class="language-haskell">current :: Amp
@@ -1651,7 +1571,7 @@ current :: Number
 current = calculateCurrent lightbulb lightbulb -- uncaught mistake
 </code></pre>
 <p>Note that the constructor of a newtype often has the same name as the newtype itself, but this is not a requirement. For example, unique names are also valid:</p>
-<pre><code class="language-haskell">newtype Coulomb = MakeCoulomb Number
+<pre><code class="language-haskell">
 </code></pre>
 <p>In this case, <code>Coulomb</code> is the <em>type constructor</em> and <code>MakeCoulomb</code> is the <em>data constructor</em>. These constructors live in different namespaces, even when the names are identical, such as with the <code>Volt</code> example. This is true for all ADTs. Note that although the type constructor and data constructor can have different names, in practice it is idiomatic for them to share the same name. This is the case with <code>Amp</code> and <code>Volt</code> types above.</p>
 <p>Another application of newtypes is to attach different <em>behavior</em> to an existing type without changing its representation at runtime. We cover that use case in the next chapter when we discuss <em>type classes</em>.</p>
@@ -1665,11 +1585,10 @@ current = calculateCurrent lightbulb lightbulb -- uncaught mistake
 <h2 id="a-library-for-vector-graphics"><a class="header" href="#a-library-for-vector-graphics">A Library for Vector Graphics</a></h2>
 <p>Let's use the data types we have defined above to create a simple library for using vector graphics.</p>
 <p>Define a type synonym for a <code>Picture</code> - just an array of <code>Shape</code>s:</p>
-<pre><code class="language-haskell">type Picture = Array Shape
+<pre><code class="language-haskell">
 </code></pre>
 <p>For debugging purposes, we'll want to be able to turn a <code>Picture</code> into something readable. The <code>showPicture</code> function lets us do that:</p>
-<pre><code class="language-haskell">showPicture :: Picture -&gt; Array String
-showPicture = map showShape
+<pre><code class="language-haskell">
 </code></pre>
 <p>Let's try it out. Compile your module with <code>spago build</code> and open PSCi with <code>spago repl</code>:</p>
 <pre><code class="language-text">$ spago build
@@ -1684,19 +1603,10 @@ $ spago repl
 <h2 id="computing-bounding-rectangles"><a class="header" href="#computing-bounding-rectangles">Computing Bounding Rectangles</a></h2>
 <p>The example code for this module contains a function <code>bounds</code> which computes the smallest bounding rectangle for a <code>Picture</code>.</p>
 <p>The <code>Bounds</code> type defines a bounding rectangle.</p>
-<pre><code class="language-haskell">type Bounds =
-  { top    :: Number
-  , left   :: Number
-  , bottom :: Number
-  , right  :: Number
-  }
+<pre><code class="language-haskell">
 </code></pre>
 <p><code>bounds</code> uses the <code>foldl</code> function from <code>Data.Foldable</code> to traverse the array of <code>Shapes</code> in a <code>Picture</code>, and accumulate the smallest bounding rectangle:</p>
-<pre><code class="language-haskell">bounds :: Picture -&gt; Bounds
-bounds = foldl combine emptyBounds
-  where
-  combine :: Bounds -&gt; Shape -&gt; Bounds
-  combine b shape = union (shapeBounds shape) b
+<pre><code class="language-haskell">
 </code></pre>
 <p>In the base case, we need to find the smallest bounding rectangle of an empty <code>Picture</code>, and the empty bounding rectangle defined by <code>emptyBounds</code> suffices.</p>
 <p>The accumulating function <code>combine</code> is defined in a <code>where</code> block. <code>combine</code> takes a bounding rectangle computed from <code>foldl</code>'s recursive call, and the next <code>Shape</code> in the array, and uses the <code>union</code> function to compute the union of the two bounding rectangles. The <code>shapeBounds</code> function computes the bounds of a single shape using pattern matching.</p>
@@ -2288,7 +2198,7 @@ instance eqHour :: Eq Hour where
 <h2 id="generalizing-function-application"><a class="header" href="#generalizing-function-application">Generalizing Function Application</a></h2>
 <p>To explain the concept of an <em>applicative functor</em>, let's consider the type constructor <code>Maybe</code> that we met earlier.</p>
 <p>The source code for this module defines a function <code>address</code> which has the following type:</p>
-<pre><code class="language-haskell">address :: String -&gt; String -&gt; String -&gt; Address
+<pre><code class="language-haskell">
 </code></pre>
 <p>This function is used to construct a value of type <code>Address</code> from three strings: a street name, a city, and a state.</p>
 <p>We can apply this function easily and see the result in PSCi:</p>
@@ -2529,27 +2439,17 @@ Nothing
 </ol>
 <h2 id="applicative-validation-1"><a class="header" href="#applicative-validation-1">Applicative Validation</a></h2>
 <p>The source code for this chapter defines several data types which might be used in an address book application. The details are omitted here, but the key functions which are exported by the <code>Data.AddressBook</code> module have the following types:</p>
-<pre><code class="language-haskell">address :: String -&gt; String -&gt; String -&gt; Address
+<pre><code class="language-haskell">
 
-phoneNumber :: PhoneType -&gt; String -&gt; PhoneNumber
 
-person :: String -&gt; String -&gt; Address -&gt; Array PhoneNumber -&gt; Person
+
+
 </code></pre>
 <p>where <code>PhoneType</code> is defined as an algebraic data type:</p>
-<pre><code class="language-haskell">data PhoneType
-  = HomePhone
-  | WorkPhone
-  | CellPhone
-  | OtherPhone
+<pre><code class="language-haskell">
 </code></pre>
 <p>These functions can be used to construct a <code>Person</code> representing an address book entry. For example, the following value is defined in <code>Data.AddressBook</code>:</p>
-<pre><code class="language-haskell">examplePerson :: Person
-examplePerson =
-  person &quot;John&quot; &quot;Smith&quot;
-    (address &quot;123 Fake St.&quot; &quot;FakeTown&quot; &quot;CA&quot;)
-    [ phoneNumber HomePhone &quot;555-555-5555&quot;
-    , phoneNumber CellPhone &quot;555-555-0000&quot;
-    ]
+<pre><code class="language-haskell">
 </code></pre>
 <p>Test this value in PSCi (this result has been formatted):</p>
 <pre><code class="language-text">&gt; import Data.AddressBook
@@ -2573,23 +2473,12 @@ examplePerson =
 }
 </code></pre>
 <p>We saw in a previous section how we could use the <code>Either String</code> functor to validate a data structure of type <code>Person</code>. For example, provided functions to validate the two names in the structure, we might validate the entire data structure as follows:</p>
-<pre><code class="language-haskell">nonEmpty1 :: String -&gt; Either String String
-nonEmpty1 &quot;&quot;     = Left &quot;Field cannot be empty&quot;
-nonEmpty1 value  = Right value
+<pre><code class="language-haskell">
 
-validatePerson1 :: Person -&gt; Either String Person
-validatePerson1 p =
-  person &lt;$&gt; nonEmpty1 p.firstName
-         &lt;*&gt; nonEmpty1 p.lastName
-         &lt;*&gt; pure p.homeAddress
-         &lt;*&gt; pure p.phones
+
 </code></pre>
 <p>or with <em>applicative do</em></p>
-<pre><code class="language-haskell">validatePerson1Ado :: Person -&gt; Either String Person
-validatePerson1Ado p = ado
-  f &lt;- nonEmpty1 p.firstName
-  l &lt;- nonEmpty1 p.lastName
-  in person f l p.homeAddress p.phones
+<pre><code class="language-haskell">
 </code></pre>
 <p>In the first two lines, we use the <code>nonEmpty1</code> function to validate a non-empty string. <code>nonEmpty1</code> returns an error indicated with the <code>Left</code> constructor if its input is empty, otherwise it returns the value wrapped with the <code>Right</code> constructor.</p>
 <p>The final lines do not perform any validation but simply provide the <code>address</code> and <code>phones</code> fields to the <code>person</code> function as the remaining arguments.</p>
@@ -2601,31 +2490,16 @@ validatePerson1Ado p = ado
 <p>There is another applicative functor which is provided by the <code>validation</code> library. This functor is called <code>V</code>, and it provides the ability to return errors in any <em>semigroup</em>. For example, we can use <code>V (Array String)</code> to return an array of <code>String</code>s as errors, concatenating new errors onto the end of the array.</p>
 <p>The <code>Data.AddressBook.Validation</code> module uses the <code>V (Array String)</code> applicative functor to validate the data structures in the <code>Data.AddressBook</code> module.</p>
 <p>Here is an example of a validator taken from the <code>Data.AddressBook.Validation</code> module:</p>
-<pre><code class="language-haskell">type Errors
-  = Array String
+<pre><code class="language-haskell">
 
-nonEmpty :: String -&gt; String -&gt; V Errors String
-nonEmpty field &quot;&quot;     = invalid [ &quot;Field '&quot; &lt;&gt; field &lt;&gt; &quot;' cannot be empty&quot; ]
-nonEmpty _     value  = pure value
 
-lengthIs :: String -&gt; Int -&gt; String -&gt; V Errors String
-lengthIs field len value | length value /= len =
-  invalid [ &quot;Field '&quot; &lt;&gt; field &lt;&gt; &quot;' must have length &quot; &lt;&gt; show len ]
-lengthIs _     _   value = pure value
 
-validateAddress :: Address -&gt; V Errors Address
-validateAddress a =
-  address &lt;$&gt; nonEmpty &quot;Street&quot;  a.street
-          &lt;*&gt; nonEmpty &quot;City&quot;    a.city
-          &lt;*&gt; lengthIs &quot;State&quot; 2 a.state
+
+
+
 </code></pre>
 <p>or with <em>applicative do</em></p>
-<pre><code class="language-haskell">validateAddressAdo :: Address -&gt; V Errors Address
-validateAddressAdo a = ado
-  street &lt;- nonEmpty &quot;Street&quot;  a.street
-  city   &lt;- nonEmpty &quot;City&quot;    a.city
-  state  &lt;- lengthIs &quot;State&quot; 2 a.state
-  in address street city state
+<pre><code class="language-haskell">
 </code></pre>
 <p><code>validateAddress</code> validates an <code>Address</code> structure. It checks that the <code>street</code> and <code>city</code> fields are non-empty, and checks that the string in the <code>state</code> field has length 2.</p>
 <p>Notice how the <code>nonEmpty</code> and <code>lengthIs</code> validator functions both use the <code>invalid</code> function provided by the <code>Data.Validation</code> module to indicate an error. Since we are working in the <code>Array String</code> semigroup, <code>invalid</code> takes an array of strings as its argument.</p>
@@ -2647,24 +2521,14 @@ validateAddressAdo a = ado
 <p>This time, we receive an array of all validation errors.</p>
 <h2 id="regular-expression-validators"><a class="header" href="#regular-expression-validators">Regular Expression Validators</a></h2>
 <p>The <code>validatePhoneNumber</code> function uses a regular expression to validate the form of its argument. The key is a <code>matches</code> validation function, which uses a <code>Regex</code> from the <code>Data.String.Regex</code> module to validate its input:</p>
-<pre><code class="language-haskell">matches :: String -&gt; Regex -&gt; String -&gt; V Errors String
-matches _     regex value | test regex value
-                          = pure value
-matches field _     _     = invalid [ &quot;Field '&quot; &lt;&gt; field &lt;&gt; &quot;' did not match the required format&quot; ]
+<pre><code class="language-haskell">
 </code></pre>
 <p>Again, notice how <code>pure</code> is used to indicate successful validation, and <code>invalid</code> is used to signal an array of errors.</p>
 <p><code>validatePhoneNumber</code> is built from the <code>matches</code> function in the same way as before:</p>
-<pre><code class="language-haskell">validatePhoneNumber :: PhoneNumber -&gt; V Errors PhoneNumber
-validatePhoneNumber pn =
-  phoneNumber &lt;$&gt; pure pn.&quot;type&quot;
-              &lt;*&gt; matches &quot;Number&quot; phoneNumberRegex pn.number
+<pre><code class="language-haskell">
 </code></pre>
 <p>or with <em>applicative do</em></p>
-<pre><code class="language-haskell">validatePhoneNumberAdo :: PhoneNumber -&gt; V Errors PhoneNumber
-validatePhoneNumberAdo pn = ado
-  tpe    &lt;- pure pn.&quot;type&quot;
-  number &lt;- matches &quot;Number&quot; phoneNumberRegex pn.number
-  in phoneNumber tpe number
+<pre><code class="language-haskell">
 </code></pre>
 <p>Again, try running this validator against some valid and invalid inputs in PSCi:</p>
 <pre><code class="language-text">&gt; validatePhoneNumber $ phoneNumber HomePhone &quot;555-555-5555&quot;
@@ -2681,27 +2545,12 @@ invalid ([&quot;Field 'Number' did not match the required format&quot;])
 </ol>
 <h2 id="traversable-functors"><a class="header" href="#traversable-functors">Traversable Functors</a></h2>
 <p>The remaining validator is <code>validatePerson</code>, which combines the validators we have seen so far to validate an entire <code>Person</code> structure, including the following new <code>validatePhoneNumbers</code> function:</p>
-<pre><code class="language-haskell">validatePhoneNumbers :: String -&gt; Array PhoneNumber -&gt; V Errors (Array PhoneNumber)
-validatePhoneNumbers field []      =
-  invalid [ &quot;Field '&quot; &lt;&gt; field &lt;&gt; &quot;' must contain at least one value&quot; ]
-validatePhoneNumbers _     phones  =
-  traverse validatePhoneNumber phones
+<pre><code class="language-haskell">
 
-validatePerson :: Person -&gt; V Errors Person
-validatePerson p =
-  person &lt;$&gt; nonEmpty &quot;First Name&quot; p.firstName
-         &lt;*&gt; nonEmpty &quot;Last Name&quot; p.lastName
-         &lt;*&gt; validateAddress p.homeAddress
-         &lt;*&gt; validatePhoneNumbers &quot;Phone Numbers&quot; p.phones
+
 </code></pre>
 <p>or with <em>applicative do</em></p>
-<pre><code class="language-haskell">validatePersonAdo :: Person -&gt; V Errors Person
-validatePersonAdo p = ado
-  firstName &lt;- nonEmpty &quot;First Name&quot; p.firstName
-  lastName  &lt;- nonEmpty &quot;Last Name&quot; p.lastName
-  address   &lt;- validateAddress p.homeAddress
-  numbers   &lt;- validatePhoneNumbers &quot;Phone Numbers&quot; p.phones
-  in person firstName lastName address numbers
+<pre><code class="language-haskell">
 </code></pre>
 <p><code>validatePhoneNumbers</code> uses a new function we haven't seen before - <code>traverse</code>.</p>
 <p><code>traverse</code> is defined in the <code>Data.Traversable</code> module, in the <code>Traversable</code> type class:</p>
@@ -2825,13 +2674,7 @@ pure ((Just &quot;Testing&quot;))
 import Control.Plus (empty)
 import Data.Array ((..))
 
-countThrows :: Int -&gt; Array (Array Int)
-countThrows n = do
-  x &lt;- 1 .. 6
-  y &lt;- 1 .. 6
-  if x + y == n
-    then pure [ x, y ]
-    else empty
+
 </code></pre>
 <p>We can see that this function works in PSCi:</p>
 <pre><code class="language-text">&gt; import Test.Examples
@@ -2961,9 +2804,7 @@ foldl :: forall   a b.            (a -&gt; b -&gt;   a) -&gt; a -&gt; List b -&g
 </code></pre>
 <p>Note that this implementation is almost identical to that of <code>foldl</code> on lists, with the exception of do notation.</p>
 <p>We can define and test this function in PSCi. Here is an example - suppose we defined a &quot;safe division&quot; function on integers, which tested for division by zero and used the <code>Maybe</code> type constructor to indicate failure:</p>
-<pre><code class="language-hs">safeDivide :: Int -&gt; Int -&gt; Maybe Int
-safeDivide _ 0 = Nothing
-safeDivide a b = Just (a / b)
+<pre><code class="language-hs">
 </code></pre>
 <p>Then we can use <code>foldM</code> to express iterated safe division:</p>
 <pre><code class="language-text">&gt; import Test.Examples
@@ -3336,25 +3177,7 @@ $ npx parcel src/index.html --open
 </code></pre>
 <p>It calls our generated JavaScript equivalent of the <code>main</code> function of <code>module Main</code> (<code>src/main.purs</code>). Recall that <code>spago build</code> puts all generated JavaScript in the <code>output</code> directory.</p>
 <p>The <code>main</code> function uses the DOM and HTML APIs to render our address book component within the <code>container</code> element we defined in <code>index.html</code>:</p>
-<pre><code class="language-hs">main :: Effect Unit
-main = do
-  log &quot;Rendering address book component&quot;
-  -- Get window object
-  w &lt;- window
-  -- Get window's HTML document
-  doc &lt;- document w
-  -- Get &quot;container&quot; element in HTML
-  ctr &lt;- getElementById &quot;container&quot; $ toNonElementParentNode doc
-  case ctr of
-    Nothing -&gt; throw &quot;Container element not found.&quot;
-    Just c -&gt; do
-      -- Create AddressBook react component
-      addressBookApp &lt;- mkAddressBookApp
-      let
-        -- Create JSX node from react component. Pass-in empty props
-        app = element addressBookApp {}
-      -- Render AddressBook JSX node in DOM &quot;container&quot; element
-      D.render app c
+<pre><code class="language-hs">
 </code></pre>
 <p>Note that these three lines:</p>
 <pre><code class="language-hs">w &lt;- window
@@ -3466,18 +3289,7 @@ setPerson :: (state -&gt; state) -&gt; Effect Unit
 <li><code>div'</code>: Same as <code>div</code>, but returns the <code>ReactComponent</code> before conversion to <code>JSX</code>.</li>
 </ul>
 <p>To display validation errors (if any) at the top of our form, we create a <code>renderValidationErrors</code> helper function that turns the <code>Errors</code> structure into an array of JSX. This array is prepended to the rest of our form.</p>
-<pre><code class="language-hs">renderValidationErrors :: Errors -&gt; Array R.JSX
-renderValidationErrors [] = []
-renderValidationErrors xs =
-  let
-    renderError :: String -&gt; R.JSX
-    renderError err = D.li_ [ D.text err ]
-  in
-    [ D.div
-        { className: &quot;alert alert-danger row&quot;
-        , children: [ D.ul_ (map renderError xs) ]
-        }
-    ]
+<pre><code class="language-hs">
 </code></pre>
 <p>Note that since we are simply manipulating regular data structures here, we can use functions like <code>map</code> to build up more interesting elements:</p>
 <pre><code class="language-hs">children: [ D.ul_ (map renderError xs)]
@@ -3486,34 +3298,7 @@ renderValidationErrors xs =
 <pre><code class="language-hs">className: &quot;alert alert-danger row&quot;
 </code></pre>
 <p>A second helper function is <code>formField</code>, which creates a text input for a single form field:</p>
-<pre><code class="language-hs">formField :: String -&gt; String -&gt; String -&gt; (String -&gt; Effect Unit) -&gt; R.JSX
-formField name placeholder value setValue =
-  D.label
-    { className: &quot;form-group row&quot;
-    , children:
-        [ D.div
-            { className: &quot;col-sm col-form-label&quot;
-            , children: [ D.text name ]
-            }
-        , D.div
-            { className: &quot;col-sm&quot;
-            , children:
-                [ D.input
-                    { className: &quot;form-control&quot;
-                    , placeholder
-                    , value
-                    , onChange:
-                        let
-                          handleValue :: Maybe String -&gt; Effect Unit
-                          handleValue (Just v) = setValue v
-                          handleValue Nothing  = pure unit
-                        in
-                          handler targetValue handleValue
-                    }
-                ]
-            }
-        ]
-    }
+<pre><code class="language-hs">
 </code></pre>
 <p>Putting the <code>input</code> and display <code>text</code> in a <code>label</code> aids in accessibility for screen readers.</p>
 <p>The <code>onChange</code> attribute allows us to describe how to respond to user input. We use the <code>handler</code> function, which has the following type:</p>
@@ -3881,9 +3666,7 @@ exports.encodeURIComponent = encodeURIComponent;
 <p><code>test/Examples.js</code>:</p>
 <pre><code class="language-js">&quot;use strict&quot;;
 
-exports.square = function (n) {
-  return n * n;
-};
+
 </code></pre>
 <p><code>test/Examples.purs</code>:</p>
 <pre><code class="language-hs">module Test.Examples where
@@ -3898,20 +3681,15 @@ foreign import square :: Number -&gt; Number
 </code></pre>
 <h2 id="functions-of-multiple-arguments"><a class="header" href="#functions-of-multiple-arguments">Functions of Multiple Arguments</a></h2>
 <p>Let's rewrite our <code>diagonal</code> function from Chapter 2 in a foreign module. This function calculates the diagonal of a right-angled triangle.</p>
-<pre><code class="language-hs">foreign import diagonal :: Number -&gt; Number -&gt; Number
+<pre><code class="language-hs">
 </code></pre>
 <p>Recall that functions in PureScript are <em>curried</em>. <code>diagonal</code> is a function that takes a <code>Number</code> and returns a <em>function</em>, that takes a <code>Number</code> and returns a <code>Number</code>.</p>
-<pre><code class="language-js">exports.diagonal = function (w) {
-  return function (h) {
-    return Math.sqrt(w * w + h * h);
-  };
-};
+<pre><code class="language-js">
 </code></pre>
 <p>Or with ES6 arrow syntax (see ES6 note below).</p>
-<pre><code class="language-js">exports.diagonalArrow = w =&gt; h =&gt;
-  Math.sqrt(w * w + h * h);
+<pre><code class="language-js">
 </code></pre>
-<pre><code class="language-hs">foreign import diagonalArrow :: Number -&gt; Number -&gt; Number
+<pre><code class="language-hs">
 </code></pre>
 <pre><code class="language-text">$ spago repl
 
@@ -3923,12 +3701,10 @@ foreign import square :: Number -&gt; Number
 </code></pre>
 <h2 id="uncurried-functions"><a class="header" href="#uncurried-functions">Uncurried Functions</a></h2>
 <p>Writing curried functions in JavaScript isn't always feasible, despite being scarcely idiomatic. A typical multi-argument JavaScript function would be of the <em>uncurried</em> form:</p>
-<pre><code class="language-js">exports.diagonalUncurried = function (w, h) {
-  return Math.sqrt(w * w + h * h);
-};
+<pre><code class="language-js">
 </code></pre>
 <p>The module <code>Data.Function.Uncurried</code> exports <em>wrapper</em> types and utility functions to work with uncurried functions.</p>
-<pre><code class="language-hs">foreign import diagonalUncurried :: Fn2 Number Number Number
+<pre><code class="language-hs">
 </code></pre>
 <p>Inspecting the type constructor <code>Fn2</code>:</p>
 <pre><code class="language-text">$ spago repl
@@ -3950,12 +3726,10 @@ Type -&gt; Type -&gt; Type -&gt; Type
 <h2 id="a-note-about-uncurried-functions"><a class="header" href="#a-note-about-uncurried-functions">A Note About Uncurried Functions</a></h2>
 <p>PureScript's curried functions has certain advantages. It allows us to partially apply functions, and to give type class instances for function types - but it comes with a performance penalty. For performance critical code, it is sometimes necessary to define uncurried JavaScript functions which accept multiple arguments.</p>
 <p>We can also create uncurried functions from PureScript. For a function of two arguments, we can use the <code>mkFn2</code> function.</p>
-<pre><code class="language-haskell">uncurriedAdd :: Fn2 Int Int Int
-uncurriedAdd = mkFn2 \n m -&gt; m + n
+<pre><code class="language-haskell">
 </code></pre>
 <p>We can apply the uncurried function of two arguments by using <code>runFn2</code> as before:</p>
-<pre><code class="language-haskell">uncurriedSum :: Int
-uncurriedSum = runFn2 uncurriedAdd 3 10
+<pre><code class="language-haskell">
 </code></pre>
 <p>The key here is that the compiler <em>inlines</em> the <code>mkFn2</code> and <code>runFn2</code> functions whenever they are fully applied. The result is that the generated code is very compact:</p>
 <pre><code class="language-javascript">var uncurriedAdd = function (n, m) {
@@ -3965,11 +3739,7 @@ uncurriedSum = runFn2 uncurriedAdd 3 10
 var uncurriedSum = uncurriedAdd(3, 10);
 </code></pre>
 <p>For contrast, here is a traditional curried function:</p>
-<pre><code class="language-haskell">curriedAdd :: Int -&gt; Int -&gt; Int
-curriedAdd n m = m + n
-
-curriedSum :: Int
-curriedSum = curriedAdd 3 10
+<pre><code class="language-haskell">
 </code></pre>
 <p>and the resulting generated code, which is less compact due to the nested functions:</p>
 <pre><code class="language-javascript">var curriedAdd = function (n) {
@@ -4378,11 +4148,9 @@ foreign import addComplexJson :: Complex -&gt; Complex -&gt; Json
 exports.addComplexJson = exports.addComplexBroken
 </code></pre>
 <p>And then write a wrapper to decode the returned foreign <code>Json</code> value:</p>
-<pre><code class="language-hs">cumulativeSumsDecoded :: Array Int -&gt; Either JsonDecodeError (Array Int)
-cumulativeSumsDecoded arr = decodeJson $ cumulativeSumsJson arr
+<pre><code class="language-hs">
 
-addComplexDecoded :: Complex -&gt; Complex -&gt; Either JsonDecodeError Complex
-addComplexDecoded a b = decodeJson $ addComplexJson a b
+
 </code></pre>
 <p>Then any values that can't be successfully decoded to our return type appear as a <code>Left</code> error <code>String</code>:</p>
 <pre><code class="language-text">$ spago repl
@@ -4412,10 +4180,7 @@ exports.addComplexJson = exports.addComplex
 </code></pre>
 <p>Using JSON is also the easiest way to pass other structural types, such as <code>Map</code> and <code>Set</code> through the FFI. Note that since JSON only consists of booleans, numbers, strings, arrays, and objects of other JSON values, we can't write a <code>Map</code> and <code>Set</code> directly in JSON. But we can represent these structures as arrays (assuming the keys and values can also be represented in JSON), and then decode them back to <code>Map</code> or <code>Set</code>.</p>
 <p>Here's an example of a foreign function signature that modifies a <code>Map</code> of <code>String</code> keys and <code>Int</code> values, along with the wrapper function that handles JSON encoding and decoding.</p>
-<pre><code class="language-hs">foreign import mapSetFooJson :: Json -&gt; Json
-
-mapSetFoo :: Map String Int -&gt; Either JsonDecodeError (Map String Int)
-mapSetFoo = encodeJson &gt;&gt;&gt; mapSetFooJson &gt;&gt;&gt; decodeJson
+<pre><code class="language-hs">
 </code></pre>
 <p>Note that this is a prime use case for function composition. Both of these alternatives are equivalent to the above:</p>
 <pre><code class="language-hs">mapSetFoo :: Map String Int -&gt; Either JsonDecodeError (Map String Int)
@@ -4538,15 +4303,9 @@ validateAndSave = do
     Data.Argonaut.Encode.Class.EncodeJson PhoneType
 </code></pre>
 <p>This is because <code>PhoneType</code> in the <code>Person</code> record needs an <code>EncodeJson</code> instance. We'll just derive a generic encode instance, and a decode instance too while we're at it. More information how this works is available in the argonaut docs:</p>
-<pre><code class="language-hs">import Data.Argonaut (class DecodeJson, class EncodeJson)
-import Data.Argonaut.Decode.Generic (genericDecodeJson)
-import Data.Argonaut.Encode.Generic (genericEncodeJson)
-import Data.Generic.Rep (class Generic)
+<pre><code class="language-hs">
 
-derive instance genericPhoneType :: Generic PhoneType _
 
-instance encodeJsonPhoneType :: EncodeJson PhoneType where encodeJson = genericEncodeJson
-instance decodeJsonPhoneType :: DecodeJson PhoneType where decodeJson = genericDecodeJson
 </code></pre>
 <p>Now we can save our <code>person</code> to local storage, but this isn't very useful unless we can retrieve the data. We'll tackle that next.</p>
 <p>We'll start with retrieving the &quot;person&quot; string from local storage:</p>
@@ -5507,10 +5266,7 @@ lineHandler currentState input = do
 <p>The <code>Example/Rectangle.purs</code> file contains a simple introductory example, which draws a single blue rectangle at the center of the canvas. The module imports the <code>Effect</code> type from the <code>Effect</code> module, and also the <code>Graphics.Canvas</code> module, which contains actions in the <code>Effect</code> monad for working with the Canvas API.</p>
 <p>The <code>main</code> action starts, like in the other modules, by using the <code>getCanvasElementById</code> action to get a reference to the canvas object, and the <code>getContext2D</code> action to access the 2D rendering context for the canvas:</p>
 <p>The <code>void</code> function takes a functor and replaces its value with <code>Unit</code>. In the example it is used to make <code>main</code> conform with its signature.</p>
-<pre><code class="language-haskell">main :: Effect Unit
-main = void $ unsafePartial do
-  Just canvas &lt;- getCanvasElementById &quot;canvas&quot;
-  ctx &lt;- getContext2D canvas
+<pre><code class="language-haskell">
 </code></pre>
 <p><em>Note</em>: the call to <code>unsafePartial</code> here is necessary since the pattern match on the result of <code>getCanvasElementById</code> is partial, matching only the <code>Just</code> constructor. For our purposes, this is fine, but in production code, we would probably want to match the <code>Nothing</code> constructor and provide an appropriate error message.</p>
 <p>The types of these actions can be found using PSCi or by looking at the documentation:</p>
@@ -5521,19 +5277,14 @@ getContext2D :: CanvasElement -&gt; Effect Context2D
 <p><code>CanvasElement</code> and <code>Context2D</code> are types defined in the <code>Graphics.Canvas</code> module. The same module also defines the <code>Canvas</code> effect, which is used by all of the actions in the module.</p>
 <p>The graphics context <code>ctx</code> manages the state of the canvas, and provides methods to render primitive shapes, set styles and colors, and apply transformations.</p>
 <p>We continue by setting the fill style to solid blue using the <code>setFillStyle</code> action. The longer hex notation of <code>#0000FF</code> may also be used for blue, but shorthand notation is easier for simple colors:</p>
-<pre><code class="language-haskell">  setFillStyle ctx &quot;#00F&quot;
+<pre><code class="language-haskell">
 </code></pre>
 <p>Note that the <code>setFillStyle</code> action takes the graphics context as an argument. This is a common pattern in the <code>Graphics.Canvas</code> module.</p>
 <p>Finally, we use the <code>fillPath</code> action to fill the rectangle. <code>fillPath</code> has the following type:</p>
 <pre><code class="language-haskell">fillPath :: forall a. Context2D -&gt; Effect a -&gt; Effect a
 </code></pre>
 <p><code>fillPath</code> takes a graphics context and another action which builds the path to render. To build a path, we can use the <code>rect</code> action. <code>rect</code> takes a graphics context, and a record which provides the position and size of the rectangle:</p>
-<pre><code class="language-haskell">  fillPath ctx $ rect ctx
-    { x: 250.0
-    , y: 250.0
-    , width: 100.0
-    , height: 100.0
-    }
+<pre><code class="language-haskell">
 </code></pre>
 <p>Build the rectangle example, providing <code>Example.Rectangle</code> as the name of the main module:</p>
 <pre><code class="language-text">$ spago bundle-app --main Example.Rectangle --to dist/Main.js
@@ -5572,28 +5323,13 @@ getContext2D :: CanvasElement -&gt; Effect Context2D
 </code></pre>
 <p>Notice that both the <code>Rectangle</code> and <code>Arc</code> record types contain <code>x</code> and <code>y</code> properties of type <code>Number</code>. In both cases, this pair represents a point. This means that we can write row-polymorphic functions which can act on either type of record.</p>
 <p>For example, the <code>Shapes</code> module defines a <code>translate</code> function which translates a shape by modifying its <code>x</code> and <code>y</code> properties:</p>
-<pre><code class="language-haskell">translate
-  :: forall r
-   . Number
-  -&gt; Number
-  -&gt; { x :: Number, y :: Number | r }
-  -&gt; { x :: Number, y :: Number | r }
-translate dx dy shape = shape
-  { x = shape.x + dx
-  , y = shape.y + dy
-  }
+<pre><code class="language-haskell">
 </code></pre>
 <p>Notice the row-polymorphic type. It says that <code>translate</code> accepts any record with <code>x</code> and <code>y</code> properties <em>and any other properties</em>, and returns the same type of record. The <code>x</code> and <code>y</code> fields are updated, but the rest of the fields remain unchanged.</p>
 <p>This is an example of <em>record update syntax</em>. The expression <code>shape { ... }</code> creates a new record based on the <code>shape</code> record, with the fields inside the braces updated to the specified values. Note that the expressions inside the braces are separated from their labels by equals symbols, not colons like in record literals.</p>
 <p>The <code>translate</code> function can be used with both the <code>Rectangle</code> and <code>Arc</code> records, as can be seen in the <code>Shapes</code> example.</p>
 <p>The third type of path rendered in the <code>Shapes</code> example is a piecewise-linear path. Here is the corresponding code:</p>
-<pre><code class="language-haskell">  setFillStyle ctx &quot;#F00&quot;
-
-  fillPath ctx $ do
-    moveTo ctx 300.0 260.0
-    lineTo ctx 260.0 340.0
-    lineTo ctx 340.0 340.0
-    closePath ctx
+<pre><code class="language-haskell">
 </code></pre>
 <p>There are three functions in use here:</p>
 <ul>
@@ -5634,28 +5370,16 @@ translate dx dy shape = shape
 <h2 id="drawing-random-circles"><a class="header" href="#drawing-random-circles">Drawing Random Circles</a></h2>
 <p>The <code>Example/Random.purs</code> file contains an example which uses the <code>Effect</code> monad to interleave two different types of side-effect: random number generation, and canvas manipulation. The example renders one hundred randomly generated circles onto the canvas.</p>
 <p>The <code>main</code> action obtains a reference to the graphics context as before, and then sets the stroke and fill styles:</p>
-<pre><code class="language-haskell">  setFillStyle ctx &quot;#F00&quot;
-  setStrokeStyle ctx &quot;#000&quot;
+<pre><code class="language-haskell">
 </code></pre>
 <p>Next, the code uses the <code>for_</code> function to loop over the integers between <code>0</code> and <code>100</code>:</p>
-<pre><code class="language-haskell">  for_ (1 .. 100) \_ -&gt; do
+<pre><code class="language-haskell">
 </code></pre>
 <p>On each iteration, the do notation block starts by generating three random numbers distributed between <code>0</code> and <code>1</code>. These numbers represent the <code>x</code> and <code>y</code> coordinates, and the radius of a circle:</p>
-<pre><code class="language-haskell">    x &lt;- random
-    y &lt;- random
-    r &lt;- random
+<pre><code class="language-haskell">
 </code></pre>
 <p>Next, for each circle, the code creates an <code>Arc</code> based on these parameters and finally fills and strokes the arc with the current styles:</p>
-<pre><code class="language-haskell">    let path = arc ctx
-         { x     : x * 600.0
-         , y     : y * 600.0
-         , radius: r * 50.0
-         , start : 0.0
-         , end   : Math.tau
-         }
-
-    fillPath ctx path
-    strokePath ctx path
+<pre><code class="language-haskell">
 </code></pre>
 <p>Build this example by specifying the <code>Example.Random</code> module as the main module:</p>
 <pre><code class="language-text">$ spago bundle-app --main Example.Random --to dist/Main.js
@@ -5736,27 +5460,13 @@ Type -&gt; Type
 <p>A value of type <code>Ref a</code> is a mutable reference cell containing a value of type <code>a</code>, used to track global mutation. As such, it should be used sparingly.</p>
 <p>The <code>Example/Refs.purs</code> file contains an example which uses a <code>Ref</code> to track mouse clicks on the <code>canvas</code> element.</p>
 <p>The code starts by creating a new reference containing the value <code>0</code>, by using the <code>new</code> action:</p>
-<pre><code class="language-haskell">  clickCount &lt;- Ref.new 0
+<pre><code class="language-haskell">
 </code></pre>
 <p>Inside the click event handler, the <code>modify</code> action is used to update the click count, and the updated value is returned.</p>
-<pre><code class="language-haskell">    count &lt;- Ref.modify (\count -&gt; count + 1) clickCount
+<pre><code class="language-haskell">
 </code></pre>
 <p>In the <code>render</code> function, the click count is used to determine the transformation applied to a rectangle:</p>
-<pre><code class="language-haskell">  withContext ctx do
-    let scaleX = Math.sin (toNumber count * Math.tau / 8.0) + 1.5
-    let scaleY = Math.sin (toNumber count * Math.tau / 12.0) + 1.5
-
-    translate ctx { translateX: 300.0, translateY:  300.0 }
-    rotate ctx (toNumber count * Math.tau / 36.0)
-    scale ctx { scaleX: scaleX, scaleY: scaleY }
-    translate ctx { translateX: -100.0, translateY: -100.0 }
-
-    fillPath ctx $ rect ctx
-      { x: 0.0
-      , y: 0.0
-      , width: 200.0
-      , height: 200.0
-      }
+<pre><code class="language-haskell">
 </code></pre>
 <p>This action uses <code>withContext</code> to preserve the original transformation, and then applies the following sequence of transformations (remember that transformations are applied bottom-to-top):</p>
 <ul>
@@ -5792,20 +5502,16 @@ FLFRRFLFLFLFRRFLFRRFLFRRFLFLFLFRRFLFRRFLFRRFLF...
 <p>and so on. Plotting a piecewise-linear path corresponding to this set of instruction approximates a curve called the <em>Koch curve</em>. Increasing the number of iterations increases the resolution of the curve.</p>
 <p>Let's translate this into the language of types and functions.</p>
 <p>We can represent our alphabet of letters with the following ADT:</p>
-<pre><code class="language-haskell">data Letter = L | R | F
+<pre><code class="language-haskell">
 </code></pre>
 <p>This data type defines one data constructor for each letter in our alphabet.</p>
 <p>How can we represent the initial sequence of letters? Well, that's just an array of letters from our alphabet, which we will call a <code>Sentence</code>:</p>
-<pre><code class="language-haskell">type Sentence = Array Letter
+<pre><code class="language-haskell">
 
-initial :: Sentence
-initial = [F, R, R, F, R, R, F, R, R]
+
 </code></pre>
 <p>Our production rules can be represented as a function from <code>Letter</code> to <code>Sentence</code> as follows:</p>
-<pre><code class="language-haskell">productions :: Letter -&gt; Sentence
-productions L = [L]
-productions R = [R]
-productions F = [F, L, F, R, R, F, L, F]
+<pre><code class="language-haskell">
 </code></pre>
 <p>This is just copied straight from the specification above.</p>
 <p>Now we can implement a function <code>lsystem</code> which will take a specification in this form, and render it to the canvas. What type should <code>lsystem</code> have? Well, it needs to take values like <code>initial</code> and <code>productions</code> as arguments, as well as a function which can render a letter of the alphabet to the canvas.</p>
@@ -5838,16 +5544,11 @@ productions F = [F, L, F, R, R, F, L, F]
 <p>Firstly, the type <code>s</code> was added as the type of an additional argument to <code>lsystem</code>. This argument will represent the initial state of the L-system.</p>
 <p>The type <code>s</code> also appears as an argument to, and as the return type of the interpretation function (the third argument to <code>lsystem</code>). The interpretation function will now receive the current state of the L-system as an argument, and will return a new, updated state as its return value.</p>
 <p>In the case of our example, we can define use following type to represent the state:</p>
-<pre><code class="language-haskell">type State =
-  { x :: Number
-  , y :: Number
-  , theta :: Number
-  }
+<pre><code class="language-haskell">
 </code></pre>
 <p>The properties <code>x</code> and <code>y</code> represent the current position of the path, and the <code>theta</code> property represents the current direction of the path, specified as the angle between the path direction and the horizontal axis, in radians.</p>
 <p>The initial state of the system might be specified as follows:</p>
-<pre><code class="language-haskell">initialState :: State
-initialState = { x: 120.0, y: 200.0, theta: 0.0 }
+<pre><code class="language-haskell">
 </code></pre>
 <p>Now let's try to implement the <code>lsystem</code> function. We will find that its definition is remarkably simple.</p>
 <p>It seems reasonable that <code>lsystem</code> should recurse on its fourth argument (of type <code>Int</code>). On each step of the recursion, the current sentence will change, having been updated by using the production rules. With that in mind, let's begin by introducing names for the function arguments, and delegating to a helper function:</p>
@@ -5858,48 +5559,34 @@ initialState = { x: 120.0, y: 200.0, theta: 0.0 }
         -&gt; Int
         -&gt; s
         -&gt; Effect s
-lsystem init prod interpret n state = go init n
-  where
+
 </code></pre>
 <p>The <code>go</code> function works by recursion on its second argument. There are two cases: when <code>n</code> is zero, and when <code>n</code> is non-zero.</p>
 <p>In the first case, the recursion is complete, and we simply need to interpret the current sentence according to the interpretation function. We have a sentence of type <code>Array a</code>, a state of type <code>s</code>, and a function of type <code>s -&gt; a -&gt; Effect s</code>. This sounds like a job for the <code>foldM</code> function which we defined earlier, and which is available from the <code>control</code> package:</p>
-<pre><code class="language-haskell">  go s 0 = foldM interpret state s
+<pre><code class="language-haskell">
 </code></pre>
 <p>What about in the non-zero case? In that case, we can simply apply the production rules to each letter of the current sentence, concatenate the results, and repeat by calling <code>go</code> recursively:</p>
-<pre><code class="language-haskell">  go s i = go (concatMap prod s) (i - 1)
+<pre><code class="language-haskell">
 </code></pre>
 <p>That's it! Note how the use of higher order functions like <code>foldM</code> and <code>concatMap</code> allowed us to communicate our ideas concisely.</p>
 <p>However, we're not quite done. The type we have given is actually still too specific. Note that we don't use any canvas operations anywhere in our implementation. Nor do we make use of the structure of the <code>Effect</code> monad at all. In fact, our function works for <em>any</em> monad <code>m</code>!</p>
 <p>Here is the more general type of <code>lsystem</code>, as specified in the accompanying source code for this chapter:</p>
-<pre><code class="language-haskell">lsystem :: forall a m s
-         . Monad m
-         =&gt; Array a
-         -&gt; (a -&gt; Array a)
-         -&gt; (s -&gt; a -&gt; m s)
-         -&gt; Int
-         -&gt; s
-         -&gt; m s
+<pre><code class="language-haskell">
 </code></pre>
 <p>We can understand this type as saying that our interpretation function is free to have any side-effects at all, captured by the monad <code>m</code>. It might render to the canvas, or print information to the console, or support failure or multiple return values. The reader is encouraged to try writing L-systems which use these various types of side-effect.</p>
 <p>This function is a good example of the power of separating data from implementation. The advantage of this approach is that we gain the freedom to interpret our data in multiple different ways. We might even factor <code>lsystem</code> into two smaller functions: the first would build the sentence using repeated application of <code>concatMap</code>, and the second would interpret the sentence using <code>foldM</code>. This is also left as an exercise for the reader.</p>
 <p>Let's complete our example by implementing its interpretation function. The type of <code>lsystem</code> tells us that its type signature must be <code>s -&gt; a -&gt; m s</code> for some types <code>a</code> and <code>s</code> and a type constructor <code>m</code>. We know that we want <code>a</code> to be <code>Letter</code> and <code>s</code> to be <code>State</code>, and for the monad <code>m</code> we can choose <code>Effect</code>. This gives us the following type:</p>
-<pre><code class="language-haskell">    interpret :: State -&gt; Letter -&gt; Effect State
+<pre><code class="language-haskell">
 </code></pre>
 <p>To implement this function, we need to handle the three data constructors of the <code>Letter</code> type. To interpret the letters <code>L</code> (move left) and <code>R</code> (move right), we simply have to update the state to change the angle <code>theta</code> appropriately:</p>
-<pre><code class="language-haskell">    interpret state L = pure $ state { theta = state.theta - Math.tau / 6.0 }
-    interpret state R = pure $ state { theta = state.theta + Math.tau / 6.0 }
+<pre><code class="language-haskell">
 </code></pre>
 <p>To interpret the letter <code>F</code> (move forward), we can calculate the new position of the path, render a line segment, and update the state, as follows:</p>
-<pre><code class="language-haskell">    interpret state F = do
-      let x = state.x + Math.cos state.theta * 1.5
-          y = state.y + Math.sin state.theta * 1.5
-      moveTo ctx state.x state.y
-      lineTo ctx x y
-      pure { x, y, theta: state.theta }
+<pre><code class="language-haskell">
 </code></pre>
 <p>Note that in the source code for this chapter, the <code>interpret</code> function is defined using a <code>let</code> binding inside the <code>main</code> function, so that the name <code>ctx</code> is in scope. It would also be possible to move the context into the <code>State</code> type, but this would be inappropriate because it is not a changing part of the state of the system.</p>
 <p>To render this L-system, we can simply use the <code>strokePath</code> action:</p>
-<pre><code class="language-haskell">  strokePath ctx $ lsystem initial productions interpret 5 initialState
+<pre><code class="language-haskell">
 </code></pre>
 <p>Compile the L-system example using</p>
 <pre><code class="language-text">$ spago bundle-app --main Example.LSystem --to dist/Main.js

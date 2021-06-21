@@ -204,9 +204,7 @@ exports.encodeURIComponent = encodeURIComponent;
 <p><code>test/Examples.js</code>:</p>
 <pre><code class="language-js">&quot;use strict&quot;;
 
-exports.square = function (n) {
-  return n * n;
-};
+
 </code></pre>
 <p><code>test/Examples.purs</code>:</p>
 <pre><code class="language-hs">module Test.Examples where
@@ -221,20 +219,15 @@ foreign import square :: Number -&gt; Number
 </code></pre>
 <h2 id="functions-of-multiple-arguments"><a class="header" href="#functions-of-multiple-arguments">Functions of Multiple Arguments</a></h2>
 <p>Let's rewrite our <code>diagonal</code> function from Chapter 2 in a foreign module. This function calculates the diagonal of a right-angled triangle.</p>
-<pre><code class="language-hs">foreign import diagonal :: Number -&gt; Number -&gt; Number
+<pre><code class="language-hs">
 </code></pre>
 <p>Recall that functions in PureScript are <em>curried</em>. <code>diagonal</code> is a function that takes a <code>Number</code> and returns a <em>function</em>, that takes a <code>Number</code> and returns a <code>Number</code>.</p>
-<pre><code class="language-js">exports.diagonal = function (w) {
-  return function (h) {
-    return Math.sqrt(w * w + h * h);
-  };
-};
+<pre><code class="language-js">
 </code></pre>
 <p>Or with ES6 arrow syntax (see ES6 note below).</p>
-<pre><code class="language-js">exports.diagonalArrow = w =&gt; h =&gt;
-  Math.sqrt(w * w + h * h);
+<pre><code class="language-js">
 </code></pre>
-<pre><code class="language-hs">foreign import diagonalArrow :: Number -&gt; Number -&gt; Number
+<pre><code class="language-hs">
 </code></pre>
 <pre><code class="language-text">$ spago repl
 
@@ -246,12 +239,10 @@ foreign import square :: Number -&gt; Number
 </code></pre>
 <h2 id="uncurried-functions"><a class="header" href="#uncurried-functions">Uncurried Functions</a></h2>
 <p>Writing curried functions in JavaScript isn't always feasible, despite being scarcely idiomatic. A typical multi-argument JavaScript function would be of the <em>uncurried</em> form:</p>
-<pre><code class="language-js">exports.diagonalUncurried = function (w, h) {
-  return Math.sqrt(w * w + h * h);
-};
+<pre><code class="language-js">
 </code></pre>
 <p>The module <code>Data.Function.Uncurried</code> exports <em>wrapper</em> types and utility functions to work with uncurried functions.</p>
-<pre><code class="language-hs">foreign import diagonalUncurried :: Fn2 Number Number Number
+<pre><code class="language-hs">
 </code></pre>
 <p>Inspecting the type constructor <code>Fn2</code>:</p>
 <pre><code class="language-text">$ spago repl
@@ -273,12 +264,10 @@ Type -&gt; Type -&gt; Type -&gt; Type
 <h2 id="a-note-about-uncurried-functions"><a class="header" href="#a-note-about-uncurried-functions">A Note About Uncurried Functions</a></h2>
 <p>PureScript's curried functions has certain advantages. It allows us to partially apply functions, and to give type class instances for function types - but it comes with a performance penalty. For performance critical code, it is sometimes necessary to define uncurried JavaScript functions which accept multiple arguments.</p>
 <p>We can also create uncurried functions from PureScript. For a function of two arguments, we can use the <code>mkFn2</code> function.</p>
-<pre><code class="language-haskell">uncurriedAdd :: Fn2 Int Int Int
-uncurriedAdd = mkFn2 \n m -&gt; m + n
+<pre><code class="language-haskell">
 </code></pre>
 <p>We can apply the uncurried function of two arguments by using <code>runFn2</code> as before:</p>
-<pre><code class="language-haskell">uncurriedSum :: Int
-uncurriedSum = runFn2 uncurriedAdd 3 10
+<pre><code class="language-haskell">
 </code></pre>
 <p>The key here is that the compiler <em>inlines</em> the <code>mkFn2</code> and <code>runFn2</code> functions whenever they are fully applied. The result is that the generated code is very compact:</p>
 <pre><code class="language-javascript">var uncurriedAdd = function (n, m) {
@@ -288,11 +277,7 @@ uncurriedSum = runFn2 uncurriedAdd 3 10
 var uncurriedSum = uncurriedAdd(3, 10);
 </code></pre>
 <p>For contrast, here is a traditional curried function:</p>
-<pre><code class="language-haskell">curriedAdd :: Int -&gt; Int -&gt; Int
-curriedAdd n m = m + n
-
-curriedSum :: Int
-curriedSum = curriedAdd 3 10
+<pre><code class="language-haskell">
 </code></pre>
 <p>and the resulting generated code, which is less compact due to the nested functions:</p>
 <pre><code class="language-javascript">var curriedAdd = function (n) {
@@ -701,11 +686,9 @@ foreign import addComplexJson :: Complex -&gt; Complex -&gt; Json
 exports.addComplexJson = exports.addComplexBroken
 </code></pre>
 <p>And then write a wrapper to decode the returned foreign <code>Json</code> value:</p>
-<pre><code class="language-hs">cumulativeSumsDecoded :: Array Int -&gt; Either JsonDecodeError (Array Int)
-cumulativeSumsDecoded arr = decodeJson $ cumulativeSumsJson arr
+<pre><code class="language-hs">
 
-addComplexDecoded :: Complex -&gt; Complex -&gt; Either JsonDecodeError Complex
-addComplexDecoded a b = decodeJson $ addComplexJson a b
+
 </code></pre>
 <p>Then any values that can't be successfully decoded to our return type appear as a <code>Left</code> error <code>String</code>:</p>
 <pre><code class="language-text">$ spago repl
@@ -735,10 +718,7 @@ exports.addComplexJson = exports.addComplex
 </code></pre>
 <p>Using JSON is also the easiest way to pass other structural types, such as <code>Map</code> and <code>Set</code> through the FFI. Note that since JSON only consists of booleans, numbers, strings, arrays, and objects of other JSON values, we can't write a <code>Map</code> and <code>Set</code> directly in JSON. But we can represent these structures as arrays (assuming the keys and values can also be represented in JSON), and then decode them back to <code>Map</code> or <code>Set</code>.</p>
 <p>Here's an example of a foreign function signature that modifies a <code>Map</code> of <code>String</code> keys and <code>Int</code> values, along with the wrapper function that handles JSON encoding and decoding.</p>
-<pre><code class="language-hs">foreign import mapSetFooJson :: Json -&gt; Json
-
-mapSetFoo :: Map String Int -&gt; Either JsonDecodeError (Map String Int)
-mapSetFoo = encodeJson &gt;&gt;&gt; mapSetFooJson &gt;&gt;&gt; decodeJson
+<pre><code class="language-hs">
 </code></pre>
 <p>Note that this is a prime use case for function composition. Both of these alternatives are equivalent to the above:</p>
 <pre><code class="language-hs">mapSetFoo :: Map String Int -&gt; Either JsonDecodeError (Map String Int)
@@ -861,15 +841,9 @@ validateAndSave = do
     Data.Argonaut.Encode.Class.EncodeJson PhoneType
 </code></pre>
 <p>This is because <code>PhoneType</code> in the <code>Person</code> record needs an <code>EncodeJson</code> instance. We'll just derive a generic encode instance, and a decode instance too while we're at it. More information how this works is available in the argonaut docs:</p>
-<pre><code class="language-hs">import Data.Argonaut (class DecodeJson, class EncodeJson)
-import Data.Argonaut.Decode.Generic (genericDecodeJson)
-import Data.Argonaut.Encode.Generic (genericEncodeJson)
-import Data.Generic.Rep (class Generic)
+<pre><code class="language-hs">
 
-derive instance genericPhoneType :: Generic PhoneType _
 
-instance encodeJsonPhoneType :: EncodeJson PhoneType where encodeJson = genericEncodeJson
-instance decodeJsonPhoneType :: DecodeJson PhoneType where decodeJson = genericDecodeJson
 </code></pre>
 <p>Now we can save our <code>person</code> to local storage, but this isn't very useful unless we can retrieve the data. We'll tackle that next.</p>
 <p>We'll start with retrieving the &quot;person&quot; string from local storage:</p>
