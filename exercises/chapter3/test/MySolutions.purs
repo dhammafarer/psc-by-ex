@@ -10,5 +10,5 @@ import Data.List (filter, head)
 findEntryByStreet :: String -> AddressBook -> Maybe Entry
 findEntryByStreet streetName = head <<< filter filterEntry
   where filterEntry :: Entry -> Boolean
-        filterEntry entry = entry.address.street == streetName
+        filterEntry = (eq streetName) <<< _.street <<< _.address
 
