@@ -17,3 +17,7 @@ pascal _ 0 = 1
 pascal 0 _ = 0
 pascal n k
   = pascal (n-1) k + pascal (n - 1) (k - 1)
+
+fromSingleton :: forall a. a -> Array a -> a
+fromSingleton _ [b] = b
+fromSingleton a _   = a

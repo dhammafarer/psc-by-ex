@@ -65,13 +65,14 @@ main =
           $ pascal 10 5
         Assert.equal 1
           $ pascal 5 5
-    {-  Move this block comment starting point to enable more tests
+    {-
     suite "Exercise Group - Array and Record Patterns" do
       test "Exercise - sameCity" do
         Assert.equal true
           $ sameCity john rose
         Assert.equal false
           $ sameCity amy rose
+    -}
       test "Exercise - fromSingleton" do
         Assert.equal "default"
           $ fromSingleton "default" []
@@ -79,6 +80,7 @@ main =
           $ fromSingleton "default" ["B"]
         Assert.equal "default"
           $ fromSingleton "default" ["B", "C", "D"]
+    {-  Move this block comment starting point to enable more tests
     suite "Exercise Group - Algebraic Data Types" do
       test "Exercise - circleAtOrigin" do
         Assert.equal origin
