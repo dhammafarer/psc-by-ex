@@ -43,7 +43,6 @@ main =
           $ factorial 4
         Assert.equal 3628800
           $ factorial 10
-    {-  Move this block comment starting point to enable more tests
       test "Exercise - binomial" do
         Assert.equal 1
           $ binomial 10 0
@@ -66,6 +65,7 @@ main =
           $ pascal 10 5
         Assert.equal 1
           $ pascal 5 5
+    {-  Move this block comment starting point to enable more tests
     suite "Exercise Group - Array and Record Patterns" do
       test "Exercise - sameCity" do
         Assert.equal true
