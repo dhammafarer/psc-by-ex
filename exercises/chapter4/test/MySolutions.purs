@@ -3,9 +3,9 @@ module Test.MySolutions where
 import Prelude
 
 import Data.Path
-import Data.Array (head,tail,filter,cons,concatMap,(:),length,(..))
+import Data.Array (head,tail,filter,cons,concatMap,(:),length,(..),foldl,catMaybes,nub,find)
 import Data.Int (even,rem,quot)
-import Data.Maybe (Maybe,fromMaybe)
+import Data.Maybe (Maybe(..),fromMaybe)
 import Test.Examples (factors)
 import Control.MonadZero (guard)
 import Test.Examples (allFiles)
@@ -88,3 +88,18 @@ whereIs path name = head $ whereIs' $ allFiles path
        guard $ testName child f
        pure child
 
+largestSmallest :: Path -> Array Path
+largestSmallest path =
+  let files = onlyFiles path
+      maybeSizes = map size files
+      maybeMax = foldl (outlier (>)) Nothing maybeSizes
+      maybeMin = foldl (outlier (<)) Nothing maybeSizes
+  in catMaybes $ map (findFileBySize files) $ nub $ [maybeMax, maybeMin]
+  where
+  outlier :: (Int -> Int -> Boolean) -> Maybe Int -> Maybe Int -> Maybe Int
+  outlier _ Nothing Nothing = Nothing
+  outlier _ (Just x) Nothing = Just x
+  outlier _ Nothing (Just x) = Just x
+  outlier criteria (Just x1) (Just x2) = if criteria x1 x2 then Just x1 else Just x2
+  findFileBySize :: Array Path -> Maybe Int -> Maybe Path
+  findFileBySize files maybeSize = find (\file -> size file == maybeSize) files
