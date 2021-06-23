@@ -22,7 +22,6 @@ main =
         Assert.equal "(1.0, 2.0)"
           $ show
           $ Point {x: 1.0, y: 2.0}
-    {-  Move this block comment starting point to enable more tests
     suite "Common Type Classes" do
       let cpx real imaginary = Complex {real, imaginary}
       suite "Show Complex" do
@@ -42,6 +41,7 @@ main =
           Assert.expectFailure "should not be equal"
             $ Assert.equal (cpx 5.0 2.0)
               $ cpx 1.0 2.0
+    {-  Move this block comment starting point to enable more tests
       suite "Semiring Complex" do
         test "add" do
           Assert.equal (cpx 4.0 6.0)
