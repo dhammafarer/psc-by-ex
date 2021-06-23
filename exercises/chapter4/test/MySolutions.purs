@@ -79,6 +79,8 @@ onlyFiles = filter (not isDirectory) <<< allFiles
 whereIs :: Path -> String -> Maybe Path
 whereIs path name = head $ whereIs' $ allFiles path
   where
+    matchName :: String -> Path -> Path -> Boolean
+    matchName name dir file = (show dir) <> name == show file
     whereIs' :: Array Path -> Array Path
     whereIs' paths = do
        child <- paths
@@ -86,5 +88,3 @@ whereIs path name = head $ whereIs' $ allFiles path
        guard $ matchName name child f
        pure child
 
-matchName :: String -> Path -> Path -> Boolean
-matchName name dir file = (show dir) <> name == show file
