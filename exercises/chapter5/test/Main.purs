@@ -84,7 +84,6 @@ main =
       test "Exercise - circleAtOrigin" do
         Assert.equal origin
           $ getCenter circleAtOrigin
-    {-  Move this block comment starting point to enable more tests
       test "Exercise - doubleScaleAndCenter" do
         Assert.equal (Circle origin 10.0)
           $ doubleScaleAndCenter $ Circle origin 5.0
@@ -109,6 +108,7 @@ main =
           $ shapeText $ Rectangle origin 1.0 1.0
         Assert.equal Nothing
           $ shapeText $ Line origin { x: 1.0, y: 1.0 }
+    {-  Move this block comment starting point to enable more tests
     suite "Exercise Group - Newtype" do
       test "Exercise - calculateWattage" do
         Assert.equal 60.0

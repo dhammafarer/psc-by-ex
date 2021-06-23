@@ -2,6 +2,7 @@ module Test.MySolutions where
 
 import Data.Picture
 import Prelude
+import Data.Maybe (Maybe(..))
 
 import Control.Bind (discard)
 
@@ -46,3 +47,7 @@ scaleShape _ text = text
 
 doubleScaleAndCenter :: Shape -> Shape
 doubleScaleAndCenter = centerShape <<< scaleShape 2.0
+
+shapeText :: Shape -> Maybe String
+shapeText (Text _ s) = Just s
+shapeText _ = Nothing
