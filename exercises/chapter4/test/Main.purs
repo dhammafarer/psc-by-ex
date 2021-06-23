@@ -76,7 +76,6 @@ main =
         test "keepNonNegativeRewrite " do
           Assert.equal [ 0.0, 2.0, 3.0 ]
             $ keepNonNegativeRewrite [ -1.5, -1.0, 0.0, -0.1, 2.0, 3.0, -4.0 ]
-    {-  Move this block comment starting point to enable more tests
     suite "Exercise Group - Flattening, Comprehensions, Do Notation, and Guards" do
       test "Exercise - isPrime" do
         assertFalse "0 is not prime"
@@ -89,6 +88,7 @@ main =
           $ isPrime 4
         assert "997 is prime"
           $ isPrime 997
+    {-  Move this block comment starting point to enable more tests
       suite "Exercise - cartesianProduct" do
         let
           -- Don't worry if this this testing helper function signature looks confusing.
@@ -110,6 +110,7 @@ main =
           [ [ "5", "five" ], [ "5", "six" ], [ "6", "five" ], [ "6", "six" ] ]
           [ "5", "6" ]
           [ "five", "six" ]
+-}
       suite "Exercise - triples" do
         -- Sorting to allow for any ordering
         test "single element array result" do
@@ -120,6 +121,7 @@ main =
           Assert.equal (sort [ [ 3, 4, 5 ], [ 5, 12, 13 ], [ 6, 8, 10 ] ])
             $ sort
             $ triples 13
+    {-  Move this block comment starting point to enable more tests
       suite "Exercise - factorize" do
         test "Test small non-prime number" do
           Assert.equal [ 3, 2 ]
@@ -153,6 +155,7 @@ main =
         test "More than 1 element" do
           Assert.equal [ 3, 2, 1 ]
             $ reverse [ 1, 2, 3 ]
+-}
     suite "Exercise Group - Filesystem" do
       test "Exercise - onlyFiles" do
         Assert.equal
@@ -175,6 +178,7 @@ main =
           $ Assert.equal (Nothing)
           $ map filename
           $ whereIs root "cat"
+{-
       suite "Exercise - largestSmallest" do
         let
           testls :: String -> Array String -> Path -> TestSuite
