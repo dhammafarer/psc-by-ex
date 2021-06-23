@@ -28,6 +28,6 @@ instance Show Complex where
 
 instance Semiring Complex where
   add (Complex {real: r1, imaginary: i1}) (Complex {real: r2, imaginary: i2}) = Complex {real: (r1+r2), imaginary: (i1+i2)}
-  mul (Complex {real: r1, imaginary: i1}) (Complex {real: r2, imaginary: i2}) = Complex {real: (r1+r2), imaginary: (i1+i2)}
+  mul (Complex {real: r1, imaginary: i1}) (Complex {real: r2, imaginary: i2}) = Complex {real: (r1 * r2 - i1 * i2), imaginary: (r1 * i2 + r2 * i1)}
   zero = Complex {real: 0.0, imaginary: 0.0}
-  one = Complex {real: 1.0, imaginary: 1.0}
+  one = Complex {real: 1.0, imaginary: zero}
